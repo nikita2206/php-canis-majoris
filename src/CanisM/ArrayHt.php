@@ -2,7 +2,7 @@
 
 namespace CanisM;
 
-class ArrayHt implements \ArrayAccess, \IteratorAggregate
+class ArrayHt implements \ArrayAccess, \IteratorAggregate, \Countable
 {
 
     /**
@@ -42,6 +42,11 @@ class ArrayHt implements \ArrayAccess, \IteratorAggregate
     public function offsetUnset($offset)
     {
         $this->decoratedHt->remove($offset);
+    }
+
+    public function count()
+    {
+        return $this->decoratedHt->count();
     }
 
 }

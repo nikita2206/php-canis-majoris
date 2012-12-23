@@ -2,7 +2,7 @@
 
 namespace CanisM;
 
-class HashTable implements \Iterator
+class HashTable implements \Iterator, \Countable
 {
 
     /**
@@ -20,7 +20,7 @@ class HashTable implements \Iterator
      *
      * @var int
      */
-    private $keyMask = 0b11;
+    private $keyMask = 3;
 
     /**
      * Number of elements currently stored in this hash
@@ -193,6 +193,11 @@ class HashTable implements \Iterator
     public function rewind()
     {
         $this->currentBucket = $this->headBucket;
+    }
+
+    public function count()
+    {
+        return $this->numberOfElements;
     }
 
 
