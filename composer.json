@@ -1,0 +1,19 @@
+{
+    "name": "nikita2206/hash-table",
+    "description": "PHP arrays (hash table) fully implemented in PHP using SplFixedArray.",
+    "require-dev": {
+        "phpunit/phpunit": "3.7.x-dev"
+    },
+    "authors": [
+        {
+            "name": "Nikita Nefedov",
+            "email": "inefedor@gmail.com"
+        }
+    ],
+    "require": {
+
+    },
+    "autoload": {
+        "psr-0": {"CanisM": "src/"}
+    }
+}
