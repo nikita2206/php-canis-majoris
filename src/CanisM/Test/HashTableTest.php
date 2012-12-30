@@ -7,7 +7,7 @@ class HashTableTest extends \PHPUnit_Framework_TestCase
 
     public function testStoreAndRetrieveByIdxWithoutReachingTableSize()
     {
-        $ht = new \CanisM\HashTable();
+        $ht = new \CanisM\HashTable\HashTable();
 
         $dataSet = range(1, 4);
 
@@ -22,7 +22,7 @@ class HashTableTest extends \PHPUnit_Framework_TestCase
 
     public function testStoreAndRetrieveByIdxWithReachingTableSize()
     {
-        $ht = new \CanisM\HashTable();
+        $ht = new \CanisM\HashTable\HashTable();
 
         $dataSet = range(1, 16);
 
@@ -37,7 +37,7 @@ class HashTableTest extends \PHPUnit_Framework_TestCase
 
     public function testStoreAndRetrieveByStringKeyWithoutReachingTableSize()
     {
-        $ht = new \CanisM\HashTable();
+        $ht = new \CanisM\HashTable\HashTable();
 
         $dataSet = array_map(function () {
             return base_convert(mt_rand(10000, 999999), 10, 33);
@@ -59,7 +59,7 @@ class HashTableTest extends \PHPUnit_Framework_TestCase
      */
     public function testStoreAndRetrieveByStringKeyWithReachingTableSize()
     {
-        $ht = new \CanisM\HashTable();
+        $ht = new \CanisM\HashTable\HashTable();
 
         $dataSet = array_map(function () {
             return base_convert(mt_rand(10000, 99999999), 10, 33);
@@ -81,7 +81,7 @@ class HashTableTest extends \PHPUnit_Framework_TestCase
      */
     public function testStoreAndRewriteValue()
     {
-        $ht = new \CanisM\HashTable();
+        $ht = new \CanisM\HashTable\HashTable();
 
         $dataSet = array_map(function () {
             return base_convert(mt_rand(99999199, 99999999), 10, 33);
@@ -102,7 +102,7 @@ class HashTableTest extends \PHPUnit_Framework_TestCase
 
     public function testAppend()
     {
-        $ht = new \CanisM\HashTable();
+        $ht = new \CanisM\HashTable\HashTable();
 
         $dataSet = range(1, 256);
 
@@ -117,7 +117,7 @@ class HashTableTest extends \PHPUnit_Framework_TestCase
 
     public function testAppendMixedWithStore()
     {
-        $ht = new \CanisM\HashTable();
+        $ht = new \CanisM\HashTable\HashTable();
 
         $dataSet = array();
 
@@ -148,7 +148,7 @@ class HashTableTest extends \PHPUnit_Framework_TestCase
 
     public function testLinkedOrder()
     {
-        $ht = new \CanisM\HashTable();
+        $ht = new \CanisM\HashTable\HashTable();
 
         $dataSet = range(1, 256);
 
@@ -167,7 +167,7 @@ class HashTableTest extends \PHPUnit_Framework_TestCase
 
     public function testForeachable()
     {
-        $ht = new \CanisM\HashTable();
+        $ht = new \CanisM\HashTable\HashTable();
 
         $dataSet = array(
             "asd", "qwe", 5 => "ret", 6 => 8, 3, "xcv" => 54
@@ -188,7 +188,7 @@ class HashTableTest extends \PHPUnit_Framework_TestCase
 
     public function testRemove()
     {
-        $ht = new \CanisM\HashTable();
+        $ht = new \CanisM\HashTable\HashTable();
 
         $dataSet = range(0, 256);
 

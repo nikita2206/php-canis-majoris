@@ -1,8 +1,10 @@
 <?php
 
-namespace CanisM;
+namespace CanisM\HashTable;
 
-class HashTableException extends \Exception
+use CanisM\CanisMajorisException;
+
+class HashTableException extends CanisMajorisException
 {
 
     public static function elementNotFound($key)

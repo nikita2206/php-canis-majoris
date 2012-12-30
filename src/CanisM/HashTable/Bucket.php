@@ -1,6 +1,6 @@
 <?php
 
-namespace CanisM;
+namespace CanisM\HashTable;
 
 /**
  * Bucket basically is just a data holder.

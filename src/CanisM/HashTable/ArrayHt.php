@@ -1,6 +1,6 @@
 <?php
 
-namespace CanisM;
+namespace CanisM\HashTable;
 
 class ArrayHt implements \ArrayAccess, \IteratorAggregate, \Countable
 {

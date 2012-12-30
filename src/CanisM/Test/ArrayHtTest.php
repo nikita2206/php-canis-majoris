@@ -7,7 +7,7 @@ class ArrayHtTest extends \PHPUnit_Framework_TestCase
 
     public function testOffsetSet()
     {
-        $ar = new \CanisM\ArrayHt();
+        $ar = new \CanisM\HashTable\ArrayHt();
 
         $ar["asd"] = "asd";
 
@@ -16,7 +16,7 @@ class ArrayHtTest extends \PHPUnit_Framework_TestCase
 
     public function testIterate()
     {
-        $ar = new \CanisM\ArrayHt();
+        $ar = new \CanisM\HashTable\ArrayHt();
 
         $dataSet = range(1, 64);
 

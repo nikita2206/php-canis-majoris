@@ -1,6 +1,6 @@
 <?php
 
-namespace CanisM;
+namespace CanisM\HashTable;
 
 class HashTable implements \Iterator, \Countable
 {
@@ -14,7 +14,7 @@ class HashTable implements \Iterator, \Countable
     private $tableSize = 4;
 
     /**
-     * $thistableSize - 1
+     * $this->tableSize - 1
      * This mask is used to adjust numeric keys for using
      * them as indexes in fixed array.
      *
@@ -39,7 +39,7 @@ class HashTable implements \Iterator, \Countable
     private $nextFreeKey = 0;
 
     /**
-     * Points to current bucket (used in iteration).
+     * Points to the current bucket (used in iteration).
      *
      * @var null|Bucket
      */

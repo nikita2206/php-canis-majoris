@@ -37,7 +37,7 @@ How to use
 There's also ArrayHt class that can fully emulate array, so you can do:
 
     <?php
-    
+
     use CanisM\ArrayHt;
 
     $ar = new ArrayHt;
