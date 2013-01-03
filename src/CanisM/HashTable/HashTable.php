@@ -89,7 +89,7 @@ class HashTable implements \Iterator, \Countable
         }
 
         if ((is_numeric($key)) && (int)$key >= $this->nextFreeKey) {
-            $this->nextFreeKey = $key + 1;
+            $this->nextFreeKey = (int)$key + 1;
         }
 
         $this->createNewBucket($index, $key, $value);
@@ -214,20 +214,13 @@ class HashTable implements \Iterator, \Countable
     {
         $this->numberOfElements++;
 
-        if (!isset($this->buckets[$index])) {
-            $this->buckets[$index] = $bucket = new Bucket($key, $data);
-            $this->attachBucketToDLList($bucket);
+        $collidedBucket = isset($this->buckets[$index]) ? $this->buckets[$index] : null;
 
-            return $bucket;
+        $this->buckets[$index] = $bucket = new Bucket($key, $data);
+
+        if ($collidedBucket !== null) {
+            $bucket->setNextCollidedBucket($collidedBucket);
         }
-
-        $collidedBucket = $this->buckets[$index];
-        while (null !== $b = $collidedBucket->getNextCollidedBucket()) {
-            $collidedBucket = $b;
-        }
-
-        $bucket = new Bucket($key, $data);
-        $collidedBucket->setNextCollidedBucket($bucket);
 
         $this->attachBucketToDLList($bucket);
 
@@ -321,17 +314,10 @@ class HashTable implements \Iterator, \Countable
             $index = $this->hashKey($bucket->getKey());
 
             if (isset($this->buckets[$index])) {
-                /** @var $collidedBucket Bucket */
-                $collidedBucket = $this->buckets[$index];
-
-                while (null !== $b = $collidedBucket->getNextCollidedBucket()) {
-                    $collidedBucket = $b;
-                }
-
-                $collidedBucket->setNextCollidedBucket($bucket);
-            } else {
-                $this->buckets[$index] = $bucket;
+                $bucket->setNextCollidedBucket($this->buckets[$index]);
             }
+
+            $this->buckets[$index] = $bucket;
 
         } while (null !== $bucket = $bucket->getNextLinkedBucket());
     }
