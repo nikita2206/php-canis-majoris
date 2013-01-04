@@ -1,9 +1,8 @@
 <?php
 
-namespace CanisM\Operation;
+namespace CanisM\Executor;
 
-use CanisM\Zval\Zval,
-    CanisM\Executor\Executor;
+use CanisM\Zval\Zval;
 
 class Translator
 {

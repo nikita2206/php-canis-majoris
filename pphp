@@ -1,0 +1,10 @@
+#!/usr/bin/php
+<?php
+require "./vendor/autoload.php";
+ini_set("xdebug.var_display_max_depth", 200000);
+$ps = new PHPParser_Parser(new PHPParser_Lexer());
+
+$ast = $ps->parse(fread(STDIN, 10000));
+
+var_dump($ast[0]);
+

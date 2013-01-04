@@ -2,7 +2,8 @@
 
 namespace CanisM\Object;
 
-use CanisM\HashTable\HashTable;
+use CanisM\HashTable\HashTable,
+    CanisM\Zval\ObjectValue;
 
 class DefaultObjectHandler implements ObjectHandlerInterface
 {
@@ -13,11 +14,16 @@ class DefaultObjectHandler implements ObjectHandlerInterface
     public function initPropertiesTable(HashTable $defaultProperties)
     {
         $properties = new HashTable();
-        foreach ($classEntry as $name => $property) {
+        foreach ($defaultProperties as $name => $property) {
             $properties->store($name, $property);
         }
 
         return $properties;
+    }
+
+    public function constructObject(ObjectValue $object, \SplFixedArray $arguments)
+    {
+        $object->executeConstructor();
     }
 
 }

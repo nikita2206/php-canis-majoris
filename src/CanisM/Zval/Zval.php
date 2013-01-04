@@ -92,4 +92,15 @@ class Zval
         return $this->isReference;
     }
 
+    public function __toString()
+    {
+        $value = $this->value;
+
+        if ($value instanceof StringValue) {
+            return $value->getValue();
+        } elseif ($value instanceof ArrayValue) {
+            return "Array";
+        }
+    }
+
 }

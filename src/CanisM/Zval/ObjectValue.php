@@ -3,7 +3,8 @@
 namespace CanisM\Zval;
 
 use CanisM\HashTable\HashTable,
-    CanisM\Object\ClassEntry;
+    CanisM\Object\ClassEntry,
+    CanisM\Executor\Executor;
 
 class ObjectValue extends Value
 {
@@ -42,6 +43,33 @@ class ObjectValue extends Value
 
     }
 
+    public function executeMethod($methodName, Executor $executor)
+    {
+        if (!$this->classEntry->getMethods()->exists($methodName)) {
+            $executor->raiseError(Executor::ERROR_FATAL, "Call to undefined method {class}::{method}()", array(
+                "{class}"  => $this->classEntry->getName(),
+                "{method}" => $methodName
+            ));
+            return;
+        }
+
+        /** @var $method \CanisM\Func\FuncEntryInterface */
+        $method = $this->classEntry->getMethods()->get($methodName);
+
+        $method->execute();
+    }
+
+    /**
+     * @return ClassEntry
+     */
+    public function getClassEntry()
+    {
+        return $this->classEntry;
+    }
+
+    /**
+     * @return HashTable|Zval[]
+     */
     public function getProperties()
     {
         return $this->properties;

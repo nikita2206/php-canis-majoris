@@ -14,6 +14,6 @@ interface ObjectHandlerInterface
      */
     public function initPropertiesTable(HashTable $defaultProperties);
 
-    public function execConstructor(ClassEntry $classEntry);
+    public function executeConstructor(ClassEntry $classEntry);
 
 }
