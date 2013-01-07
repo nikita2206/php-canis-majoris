@@ -8,6 +8,11 @@ use CanisM\Executor\Executor,
 abstract class Operation
 {
 
+    private static $replaceMap = array(
+        "Echo" => "Cout",
+        "Expr_Variable" => "Expr_FetchVariable"
+    );
+
     /**
      * @var int
      */
@@ -20,8 +25,8 @@ abstract class Operation
      */
     public static function factory(\PHPParser_Node $node)
     {
-        $nodeClass = explode("_", get_class($node));
-        $className = sprintf("\\CanisM\\Operation\\%s\\%s", $nodeClass[2], $node[3]);
+        $nodeClass = explode("_", strtr(get_class($node), self::$replaceMap));
+        $className = sprintf("\\CanisM\\Operation\\%s\\%s", $nodeClass[2], $nodeClass[3]);
 
         return new $className($node);
     }

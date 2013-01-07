@@ -8,19 +8,29 @@ use CanisM\Operation\Operation,
 class Assign extends Operation
 {
 
-    protected $expr;
+    /**
+     * @var \CanisM\Operation\Operation
+     */
+    protected $variable;
 
-    protected $var;
+    /**
+     * @var \CanisM\Operation\Operation
+     */
+    protected $expression;
 
 
     public function __construct(\PHPParser_Node_Expr_Assign $node)
     {
-        $node->expr = $node->expr;
+        $this->variable = new AssignVariable($node->var);
+        $this->expression = Operation::factory($node->expr);
     }
 
     public function execute(Executor $executor)
     {
+        $variable = $this->variable->execute($executor);
+        $expression = $this->expression->execute($executor);
 
+        $variable->setValue($expression->getValue());
     }
 
 }

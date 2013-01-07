@@ -3,6 +3,7 @@
 namespace CanisM\Executor;
 
 use CanisM\Symtable\Symtable,
+    CanisM\HashTable\HashTable,
     CanisM\Func\FuncEntryInterface,
     CanisM\Object\ClassEntry,
     CanisM\Operation\Operation,
@@ -22,7 +23,7 @@ class Executor
 
           ERROR_ALL = E_ALL;
 
-    private $errors = array(
+    public $errors = array(
         self::ERROR_FATAL        => "Fatal",
         self::ERROR_WARNING      => "Warning",
         self::ERROR_PARSE        => "Parse",
@@ -43,18 +44,39 @@ class Executor
      */
     private $superGlobalSymtable;
 
+    /**
+     * @var resource
+     */
     private $inputStream;
 
+    /**
+     * @var resource
+     */
     private $outputStream;
 
+    /**
+     * @var ErrorHandler
+     */
+    private $errorHandler;
 
-    public function __construct($inputStream, $outputStream)
+
+    public function __construct($inputStream, $outputStream, ErrorHandler $errorHandler, HashTable $superGlobalScope, HashTable $globalScope = null)
     {
         $this->inputStream = $inputStream;
         $this->outputStream = $outputStream;
+        $this->errorHandler = $errorHandler;
+
+        $this->superGlobalSymtable = $superGlobal = new Symtable($superGlobalScope);
+
+        $global = new Symtable($globalScope, $superGlobal);
+
+        $this->symtableStack = new \SplStack();
+        $this->symtableStack->push($global);
     }
 
-
+    /**
+     * @param string $code Code to execute
+     */
     public function execute($code)
     {
         $parser = new \PHPParser_Parser(new \PHPParser_Lexer());
@@ -68,15 +90,15 @@ class Executor
         }
 
         /** @var $operations Operation[] */
-        $operations = new \SplQueue();
+        $operations = array();
         foreach ($ast as $node) {
             $op = Operation::factory($node);
 
-            if ($op instanceof Declaration) {
+            /*if ($op instanceof Declaration) {
                 $op->execute($this);
-            } else {
-                $operations->enqueue($op);
-            }
+            } else {*/
+                $operations[] = $op;
+            /*}*/
         }
 
         foreach ($operations as $op) {
@@ -136,10 +158,26 @@ class Executor
         return $this->symtableStack->top();
     }
 
+    /**
+     * @param \CanisM\Zval\Zval $var
+     */
+    public function cout(Zval\Zval $var)
+    {
+        fwrite($this->outputStream, $this->castString($var));
+    }
+
+    /**
+     * @param string $string
+     */
+    public function sendOutput($string)
+    {
+        fwrite($this->outputStream, $string);
+    }
+
     public function raiseError($level, $message, array $context = null)
     {
         fwrite($this->outputStream, sprintf(
-            "%s error: %s", $this->errors[$level], strtr($message, $context ?: array())
+            "%s error: %s\n", $this->errors[$level], strtr($message, $context ?: array())
         ));
 
         if ($level & (self::ERROR_FATAL | self::ERROR_PARSE)) {
