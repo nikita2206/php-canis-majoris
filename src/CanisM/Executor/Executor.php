@@ -151,6 +151,108 @@ class Executor
     }
 
     /**
+     * @param Zval\Zval $var
+     * @return int
+     */
+    public function castInteger(Zval\Zval $var)
+    {
+        $value = $var->getValue();
+
+        if ($value instanceof Zval\ArrayValue) {
+            return (int)($value->getValue()->count() > 0);
+        } elseif ($value instanceof Zval\DoubleValue) {
+            return (int)$value->getValue();
+        } elseif ($value instanceof Zval\NullValue) {
+            return 0;
+        } elseif ($value instanceof Zval\ObjectValue) {
+            $this->raiseError(self::ERROR_NOTICE, "Object of class " . $value->getClassEntry()->getName() . " could not be converted to int");
+            return 0;
+        } elseif ($value instanceof Zval\BoolValue) {
+            return $value->getValue() === true ? 1 : 0;
+        } elseif ($value instanceof Zval\StringValue) {
+            return (int)$value->getValue();
+        }
+
+        return $value->getValue();
+    }
+
+    /**
+     * @param Zval\Zval $var
+     * @return bool
+     */
+    public function castBoolean(Zval\Zval $var)
+    {
+        $value = $var->getValue();
+
+        if ($value instanceof Zval\ArrayValue) {
+            return $value->getValue()->count() > 0;
+        } elseif ($value instanceof Zval\LongValue) {
+            return $value->getValue() !== 0;
+        } elseif ($value instanceof Zval\NullValue) {
+            return false;
+        } elseif ($value instanceof Zval\StringValue) {
+            return (bool)$value->getValue();
+        } elseif ($value instanceof Zval\DoubleValue) {
+            return $value->getValue() !== .0;
+        } elseif ($value instanceof Zval\ObjectValue) {
+            return true;
+        }
+
+        return $value->getValue();
+    }
+
+    public function compareZvals(Zval\Zval $left, Zval\Zval $right, $strict = false, $nesting = 0)
+    {
+
+        if ($nesting > 100) {
+            $this->raiseError(self::ERROR_FATAL, "Nesting level too deep - recursive dependency?");
+        }
+
+        if ($left->getValue() instanceof Zval\ArrayValue && $right->getValue() instanceof Zval\ArrayValue) {
+            return $this->isHashTablesEqual($left->getValue()->getValue(), $right->getValue()->getValue());
+        }
+
+
+
+    }
+
+    public function compareHashTables(HashTable $left, HashTable $right, $strict = false, $nesting = 0)
+    {
+        if ($left === $right) {
+            return true;
+        }
+
+        if ($left->count() !== $right->count()) {
+            return $left->count() - $right->count();
+        }
+
+        $left->rewind();
+        $right->rewind();
+
+        while ($left->valid() && $right->valid()) {
+            if ($left->key() !== $right->key()) {
+                $left->rewind();
+                $right->rewind();
+                return null;
+            }
+
+            if (0 !== $result = $this->compareZvals($left->current(), $right->current(), $strict, $nesting + 1)) {
+                $left->rewind();
+                $right->rewind();
+                return $result;
+            }
+
+            $left->next();
+            $right->next();
+        }
+
+        $left->rewind();
+        $right->rewind();
+
+        return 0;
+    }
+
+    /**
      * @return Symtable
      */
     public function getCurrentContext()
@@ -159,7 +261,7 @@ class Executor
     }
 
     /**
-     * @param \CanisM\Zval\Zval $var
+     * @param Zval\Zval $var
      */
     public function cout(Zval\Zval $var)
     {

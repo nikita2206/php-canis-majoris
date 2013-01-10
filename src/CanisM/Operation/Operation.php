@@ -26,7 +26,11 @@ abstract class Operation
     public static function factory(\PHPParser_Node $node)
     {
         $nodeClass = explode("_", strtr(get_class($node), self::$replaceMap));
-        $className = sprintf("\\CanisM\\Operation\\%s\\%s", $nodeClass[2], $nodeClass[3]);
+        if (isset($nodeClass[4])) {
+            $className = sprintf("\\CanisM\\Operation\\%s\\%s\\%s", $nodeClass[2], $nodeClass[3], $nodeClass[4]);
+        } else {
+            $className = sprintf("\\CanisM\\Operation\\%s\\%s", $nodeClass[2], $nodeClass[3]);
+        }
 
         return new $className($node);
     }

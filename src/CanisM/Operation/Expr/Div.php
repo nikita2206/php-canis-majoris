@@ -5,7 +5,7 @@ namespace CanisM\Operation\Expr;
 use CanisM\Executor\Executor,
     CanisM\Zval;
 
-class Minus extends BinOperation
+class Div extends BinOperation
 {
 
     public function execute(Executor $executor)
@@ -13,7 +13,7 @@ class Minus extends BinOperation
         $left = $this->left->execute($executor);
         $right = $this->right->execute($executor);
 
-        $result = $left->getValue()->getValue() - $right->getValue()->getValue();
+        $result = $left->getValue()->getValue() / $right->getValue()->getValue();
 
         return new Zval\Zval(is_double($result) ? new Zval\DoubleValue($result) : new Zval\LongValue($result));
     }

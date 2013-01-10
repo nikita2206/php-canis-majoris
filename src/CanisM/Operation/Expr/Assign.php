@@ -27,10 +27,10 @@ class Assign extends Operation
 
     public function execute(Executor $executor)
     {
-        $variable = $this->variable->execute($executor);
+        $varName = $this->variable->execute($executor);
         $expression = $this->expression->execute($executor);
 
-        $variable->setValue($expression->getValue());
+        $executor->getCurrentContext()->putSymbol($varName, $expression);
     }
 
 }

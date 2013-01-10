@@ -8,13 +8,15 @@ use CanisM\Executor\Executor,
 class AssignVariable extends Variable
 {
 
+    /**
+     * @param Executor $executor
+     * @return string
+     */
     public function execute(Executor $executor)
     {
         $varName = $this->getVarName($executor);
 
-        $executor->getCurrentContext()->putSymbol($varName, $container = new Zval());
-
-        return $container;
+        return $varName;
     }
 
 }

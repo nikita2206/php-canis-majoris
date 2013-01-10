@@ -19,9 +19,12 @@ class ArrayValue extends Value
         throw new \RuntimeException("You can't set new HashTable to an ArrayValue.");
     }
 
+    /**
+     * @return HashTable
+     */
     public function getValue()
     {
-        $this->value;
+        return $this->value;
     }
 
 }

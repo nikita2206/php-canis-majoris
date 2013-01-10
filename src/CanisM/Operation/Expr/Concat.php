@@ -2,31 +2,11 @@
 
 namespace CanisM\Operation\Expr;
 
-use CanisM\Operation\Operation,
-    CanisM\Executor\Executor,
+use CanisM\Executor\Executor,
     CanisM\Zval;
 
-class Concat extends Operation
+class Concat extends BinOperation
 {
-
-    /**
-     * @var \CanisM\Operation\Operation
-     */
-    private $left;
-
-    /**
-     * @var \CanisM\Operation\Operation
-     */
-    private $right;
-
-
-    public function __construct(\PHPParser_Node_Expr_Concat $node)
-    {
-        parent::__construct($node);
-
-        $this->left = Operation::factory($node->left);
-        $this->right = Operation::factory($node->right);
-    }
 
     public function execute(Executor $executor)
     {
