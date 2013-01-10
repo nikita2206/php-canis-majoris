@@ -240,6 +240,34 @@ class Executor
     }
 
     /**
+     * @param Zval\Zval $var
+     * @return HashTable
+     */
+    public function castArray(Zval\Zval $var)
+    {
+        $value = $var->getValue();
+
+        if ($value instanceof Zval\ArrayValue) {
+            return $value->getValue();
+        } elseif ($value instanceof Zval\ScalarValue) {
+            $ht = new HashTable();
+            $ht->append($var);
+            return $ht;
+        } elseif ($value instanceof Zval\ObjectValue) {
+            $ht = new HashTable();
+
+            // TODO make sure property is public
+            foreach ($value->getProperties() as $name => $value) {
+                $ht->store($name, $value);
+            }
+
+            return $ht;
+        }
+
+        return new HashTable();
+    }
+
+    /**
      * @param Zval\Zval $left
      * @param Zval\Zval $right
      * @return bool
@@ -321,6 +349,7 @@ class Executor
                     return -1;
                 }
 
+                // TODO What to do with private/protected properties?
                 return $this->compareHashTables($leftValue->getProperties(), $rightValue->getProperties(), false, $nesting);
             }
         }

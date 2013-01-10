@@ -1,0 +1,16 @@
+<?php
+
+namespace CanisM\Operation\Expr\Cast;
+
+use CanisM\Executor\Executor,
+    CanisM\Zval;
+
+class ToLong extends Cast
+{
+
+    public function execute(Executor $executor)
+    {
+        return new Zval\Zval(new Zval\LongValue($executor->castInteger($this->expr->execute($executor))));
+    }
+
+}

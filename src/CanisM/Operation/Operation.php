@@ -11,7 +11,14 @@ abstract class Operation
     private static $replaceMap = array(
         "Echo" => "Cout",
         "Expr_Variable" => "Expr_FetchVariable",
-        "Expr_Array" => "Expr_ArrayConstruct"
+        "Expr_Array" => "Expr_ArrayConstruct",
+        "Cast_Array" => "Cast_ToArray",
+        "Cast_Bool"  => "Cast_ToBool",
+        "Cast_Int"   => "Cast_ToLong",
+        "Cast_Double" => "Cast_ToDouble",
+        "Cast_Object" => "Cast_ToObject",
+        "Cast_String" => "Cast_ToString",
+        "Cast_Unset"  => "Cast_ToUnset"
     );
 
     /**
