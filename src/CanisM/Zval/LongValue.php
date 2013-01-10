@@ -2,7 +2,7 @@
 
 namespace CanisM\Zval;
 
-class LongValue extends Value
+class LongValue extends NumericValue
 {
 
     /**

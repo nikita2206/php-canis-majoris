@@ -2,7 +2,7 @@
 
 namespace CanisM\Zval;
 
-class BoolValue extends Value
+class BoolValue extends ScalarValue
 {
 
     private $value;

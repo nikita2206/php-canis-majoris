@@ -2,7 +2,7 @@
 
 namespace CanisM\Zval;
 
-class DoubleValue extends Value
+class DoubleValue extends NumericValue
 {
 
     /**

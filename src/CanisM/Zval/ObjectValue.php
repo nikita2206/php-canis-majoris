@@ -43,6 +43,11 @@ class ObjectValue extends Value
 
     }
 
+    /**
+     * @param $methodName
+     * @param Executor $executor
+     * @return Zval
+     */
     public function executeMethod($methodName, Executor $executor)
     {
         if (!$this->classEntry->getMethods()->exists($methodName)) {
@@ -56,7 +61,6 @@ class ObjectValue extends Value
         /** @var $method \CanisM\Func\FuncEntryInterface */
         $method = $this->classEntry->getMethods()->get($methodName);
 
-        $method->execute();
     }
 
     /**

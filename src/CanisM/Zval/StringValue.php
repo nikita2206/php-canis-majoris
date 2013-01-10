@@ -2,7 +2,7 @@
 
 namespace CanisM\Zval;
 
-class StringValue extends Value
+class StringValue extends ScalarValue
 {
 
     /**

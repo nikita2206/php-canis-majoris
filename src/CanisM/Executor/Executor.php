@@ -160,7 +160,7 @@ class Executor
 
         if ($value instanceof Zval\ArrayValue) {
             return (int)($value->getValue()->count() > 0);
-        } elseif ($value instanceof Zval\DoubleValue) {
+        } elseif ($value instanceof Zval\DoubleValue || $value instanceof Zval\StringValue) {
             return (int)$value->getValue();
         } elseif ($value instanceof Zval\NullValue) {
             return 0;
@@ -169,11 +169,49 @@ class Executor
             return 0;
         } elseif ($value instanceof Zval\BoolValue) {
             return $value->getValue() === true ? 1 : 0;
-        } elseif ($value instanceof Zval\StringValue) {
-            return (int)$value->getValue();
         }
 
         return $value->getValue();
+    }
+
+    /**
+     * @param Zval\Zval $var
+     * @return float
+     */
+    public function castDouble(Zval\Zval $var)
+    {
+        $value = $var->getValue();
+
+        if ($value instanceof Zval\ArrayValue) {
+            return (float)($value->getValue()->count() > 0);
+        } elseif ($value instanceof Zval\LongValue || $value instanceof Zval\StringValue) {
+            return (float)$value->getValue();
+        } elseif ($value instanceof Zval\NullValue) {
+            return .0;
+        } elseif ($value instanceof Zval\ObjectValue) {
+            $this->raiseError(self::ERROR_NOTICE, "Object of class " . $value->getClassEntry()->getName() . " could not be converted to double");
+            return 0;
+        } elseif ($value instanceof Zval\BoolValue) {
+            return $value->getValue() === true ? 1.0 : .0;
+        }
+
+        return $value->getValue();
+    }
+
+    /**
+     * @param Zval\Zval $var
+     * @return float|int
+     */
+    public function castNumeric(Zval\Zval $var)
+    {
+        if ($var->getValue() instanceof Zval\NumericValue) {
+            return $var->getValue()->getValue();
+        }
+
+        $double = $this->castDouble($var);
+        $int    = $this->castInteger($var);
+
+        return $double == $int ? $int : $double;
     }
 
     /**
@@ -201,6 +239,24 @@ class Executor
         return $value->getValue();
     }
 
+    /**
+     * @param Zval\Zval $left
+     * @param Zval\Zval $right
+     * @param bool $strict
+     * @return bool
+     */
+    public function isZvalsIdentical(Zval\Zval $left, Zval\Zval $right, $strict = false)
+    {
+        return $this->compareZvals($left, $right, $strict) === 0;
+    }
+
+    /**
+     * @param Zval\Zval $left
+     * @param Zval\Zval $right
+     * @param bool $strict
+     * @param int $nesting
+     * @return int|null
+     */
     public function compareZvals(Zval\Zval $left, Zval\Zval $right, $strict = false, $nesting = 0)
     {
 
@@ -208,11 +264,59 @@ class Executor
             $this->raiseError(self::ERROR_FATAL, "Nesting level too deep - recursive dependency?");
         }
 
-        if ($left->getValue() instanceof Zval\ArrayValue && $right->getValue() instanceof Zval\ArrayValue) {
-            return $this->isHashTablesEqual($left->getValue()->getValue(), $right->getValue()->getValue());
+        $leftValue = $left->getValue();
+        $rightValue = $right->getValue();
+
+        if ($leftValue === $rightValue) {
+            return 0;
         }
 
+        if ($strict === true && get_class($leftValue) !== get_class($rightValue)) {
+            return -1;
+        }
 
+        if ($leftValue instanceof Zval\NumericValue || $rightValue instanceof Zval\NumericValue) {
+            $leftValue = $this->castNumeric($left);
+            $rightValue = $this->castNumeric($right);
+
+            return $leftValue == $rightValue ? 0 : ($leftValue > $rightValue ? 1 : -1);
+        }
+
+        if (
+            $leftValue instanceof Zval\NullValue || $rightValue instanceof Zval\NullValue
+            ||
+            $leftValue instanceof Zval\BoolValue || $rightValue instanceof Zval\BoolValue
+        ) {
+            $leftValue = $this->castBoolean($left);
+            $rightValue = $this->castBoolean($right);
+
+            return $leftValue === $rightValue ? 0 : ($leftValue === true ? 1 : -1);
+        }
+
+        if ($leftValue instanceof Zval\StringValue || $rightValue instanceof Zval\StringValue) {
+            $leftValue = $this->castString($left);
+            $rightValue = $this->castString($right);
+
+            return $leftValue === $rightValue ? 0 : ($leftValue > $rightValue ? 1 : -1);
+        }
+
+        if ($leftValue instanceof Zval\ArrayValue && $rightValue instanceof Zval\ArrayValue) {
+            return $this->compareHashTables($leftValue->getValue(), $rightValue->getValue(), $strict, $nesting);
+        }
+
+        if ($leftValue instanceof Zval\ObjectValue && $rightValue instanceof Zval\ObjectValue) {
+            if ($strict) {
+                return (int)!($leftValue === $rightValue);
+            } else {
+                if ($leftValue->getClassEntry() !== $rightValue->getClassEntry()) {
+                    return -1;
+                }
+
+                return $this->compareHashTables($leftValue->getProperties(), $rightValue->getProperties(), false, $nesting);
+            }
+        }
+
+        return null;
 
     }
 
