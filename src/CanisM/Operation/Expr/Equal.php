@@ -13,11 +13,7 @@ class Equal extends BinOperation
         $left = $this->left->execute($executor);
         $right = $this->right->execute($executor);
 
-        if ($left->getValue() instanceof Zval\ObjectValue && $right->getValue() instanceof Zval\ObjectValue) {
-            return $left->getValue() === $right->getValue();
-        }
-
-        return new Zval\Zval(new Zval\BoolValue($left->getValue()->getValue() == $right->getValue()->getValue()));
+        return new Zval\Zval(new Zval\BoolValue($executor->isZvalsEquals($left, $right)));
     }
 
 }

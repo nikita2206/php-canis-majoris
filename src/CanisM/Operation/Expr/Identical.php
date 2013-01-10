@@ -13,11 +13,7 @@ class Identical extends BinOperation
         $left = $this->left->execute($executor);
         $right = $this->right->execute($executor);
 
-        if (get_class($left->getValue()) !== get_class($right->getValue())) {
-            return new Zval\Zval(new Zval\BoolValue(false));
-        }
-
-        return new Zval\Zval(new Zval\BoolValue($left->getValue()->getValue() == $right->getValue()->getValue()));
+        return new Zval\Zval(new Zval\BoolValue($executor->isZvalsIdentical($left, $right)));
     }
 
 }

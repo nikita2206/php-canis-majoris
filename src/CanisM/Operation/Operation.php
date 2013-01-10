@@ -10,7 +10,8 @@ abstract class Operation
 
     private static $replaceMap = array(
         "Echo" => "Cout",
-        "Expr_Variable" => "Expr_FetchVariable"
+        "Expr_Variable" => "Expr_FetchVariable",
+        "Expr_Array" => "Expr_ArrayConstruct"
     );
 
     /**

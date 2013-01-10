@@ -242,12 +242,21 @@ class Executor
     /**
      * @param Zval\Zval $left
      * @param Zval\Zval $right
-     * @param bool $strict
      * @return bool
      */
-    public function isZvalsIdentical(Zval\Zval $left, Zval\Zval $right, $strict = false)
+    public function isZvalsIdentical(Zval\Zval $left, Zval\Zval $right)
     {
-        return $this->compareZvals($left, $right, $strict) === 0;
+        return $this->compareZvals($left, $right, true) === 0;
+    }
+
+    /**
+     * @param Zval\Zval $left
+     * @param Zval\Zval $right
+     * @return bool
+     */
+    public function isZvalsEquals(Zval\Zval $left, Zval\Zval $right)
+    {
+        return $this->compareZvals($left, $right) === 0;
     }
 
     /**
